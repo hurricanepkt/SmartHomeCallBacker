@@ -28,15 +28,25 @@ namespace Database
         public required string url {get; set;}
         public DateTime timeof {get; set;} 
         public bool IsComplete {get; set;}  = false;
+        public string json {get; set;} = "";
+        public string form {get; set;} = "";
+        public string method {get; set;} = "";
+        public string response {get; set;} = "";
     }
 
     public class CallbackCreate_Dto {
         public required string url {get; set;}  = "";
         public required string timeof {get; set;} = "";
+        public required string method {get; set;} = "POST";
+        public string json {get;set; } = "";
+        public string form {get; set;} = "";
         public static Callback ToDB(CallbackCreate_Dto input) {
             return new Callback {
                 url = input.url,
-                timeof = DateTime.Parse(input.timeof)
+                timeof = DateTime.Parse(input.timeof),
+                json  = input.json,
+                form = input.form,
+                method = input.method
             };
         } 
     }
