@@ -36,14 +36,25 @@ namespace Database
 
     public class CallbackCreate_Dto {
         public required string url {get; set;}  = "";
-        public required string timeof {get; set;} = "";
+        public int? secondsFromNow {get; set;} 
+        public string timeof {get; set;} = "";
         public required string method {get; set;} = "POST";
         public string json {get;set; } = "";
         public string form {get; set;} = "";
         public static Callback ToDB(CallbackCreate_Dto input) {
+            DateTime theTime;
+            if (input.secondsFromNow != null) {
+                theTime = DateTime.Now.AddSeconds(input.secondsFromNow ?? 0);
+            } else {
+                try {
+                theTime = DateTime.Parse(input.timeof);
+                } catch {
+                    theTime = DateTime.Now;
+                }
+            }
             return new Callback {
                 url = input.url,
-                timeof = DateTime.Parse(input.timeof),
+                timeof = theTime,
                 json  = input.json,
                 form = input.form,
                 method = input.method
