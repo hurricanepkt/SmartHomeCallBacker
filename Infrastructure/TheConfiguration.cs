@@ -18,6 +18,7 @@ public class TheConfiguration {
 
     public static string CustomString => GetStringValueByKeySafe("CustomString", "key not found");
     public static int MaxFailures => GetIntValueByKeySafe("MaxFailures", 10);
+    public static AgressivenessLevel CleanupAggressiveness => GetEnumValueByKeySafe<AgressivenessLevel>("CleanupAggressiveness", AgressivenessLevel.AllComplete);
 
     private static string GetStringValueByKeySafe(string keyName, string defaultValue) {
         ArgumentNullException.ThrowIfNull(_data, nameof(_data));        
@@ -38,4 +39,15 @@ public class TheConfiguration {
         }
         
     }
+
+    private static T GetEnumValueByKeySafe<T>(string keyName, T defaultValue) {
+        try {
+            return (T) Enum.Parse(typeof(T), GetStringValueByKeySafe(keyName, String.Empty));
+        } catch {
+            return defaultValue;
+        }
+        
+    }
+
+    public enum AgressivenessLevel { AllComplete, SuccessOnly, None }
 }

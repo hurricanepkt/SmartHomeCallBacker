@@ -41,13 +41,13 @@ public class RepeatingService : BackgroundService
                     }
                 }
                 await _db.SaveChangesAsync();
+                await Cleanup();
             } catch (Exception ex) {
             
                 _logger.LogError(ex, "error in service");
             }
         }
     }
-
 
     const string FormType = "application/x-www-form-urlencoded";
     const string JsonType = "application/json";
@@ -94,5 +94,29 @@ public class RepeatingService : BackgroundService
                 todo.IsComplete = true;
             }
         }
+    }
+
+    private async Task Cleanup()
+    {   
+        switch(TheConfiguration.CleanupAggressiveness) {
+            case TheConfiguration.AgressivenessLevel.None:
+                return;
+            case TheConfiguration.AgressivenessLevel.AllComplete:
+                CleanupInner(f=> f.IsComplete);
+                break;
+            case TheConfiguration.AgressivenessLevel.SuccessOnly:
+                CleanupInner(f=> f.IsComplete && !f.IsError);
+                break;
+            default: 
+                return;
+        }
+        await _db.SaveChangesAsync();
+    }
+    private void CleanupInner(Func<Callback, bool> pred) {
+        var rng = _db.Callbacks.Where(f=> f.IsComplete);
+        if (rng.Count() > 0) {
+            _logger.LogInformation($"cleaning up {rng.Count()} records");
+            _db.Callbacks.RemoveRange(rng);
+        }        
     }
 }
