@@ -22,29 +22,29 @@ public class RepeatingService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while(await _timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested) {
-        try {
-            var todos = await _db.Callbacks.Where(t => !t.IsComplete && t.timeof <= DateTime.Now).ToListAsync();
-            foreach(var todo in todos) {
-                switch(todo.method) {
-                    case "POST": 
-                        if (string.IsNullOrWhiteSpace(todo.json)) {
-                            await PostForm(todo);
-                        } else {
-                            await PostJson(todo);
-                        }
-                        break;
-                    case "GET": 
-                        await GetUrl(todo);
-                        break;
-                    default:
-                        throw new NotImplementedException("unknown method");
+            try {
+                var todos = await _db.Callbacks.Where(t => !t.IsComplete && t.timeof <= DateTime.Now).ToListAsync();
+                foreach(var todo in todos) {
+                    switch(todo.method) {
+                        case "POST": 
+                            if (string.IsNullOrWhiteSpace(todo.json)) {
+                                await PostForm(todo);
+                            } else {
+                                await PostJson(todo);
+                            }
+                            break;
+                        case "GET": 
+                            await GetUrl(todo);
+                            break;
+                        default:
+                            throw new NotImplementedException("unknown method");
+                    }
                 }
+                await _db.SaveChangesAsync();
+            } catch (Exception ex) {
+            
+                _logger.LogError(ex, "error in service");
             }
-            await _db.SaveChangesAsync();
-        } catch (Exception ex) {
-        
-            _logger.LogError(ex, "error in service");
-        }
         }
     }
 
