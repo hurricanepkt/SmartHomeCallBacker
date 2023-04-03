@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using Database;
+using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Services;
@@ -41,6 +42,7 @@ public class RepeatingService : BackgroundService
             }
             await _db.SaveChangesAsync();
         } catch (Exception ex) {
+        
             _logger.LogError(ex, "error in service");
         }
         }
@@ -69,6 +71,7 @@ public class RepeatingService : BackgroundService
         await DoIt(todo, (a,b) => _httpClient.GetAsync(a), String.Empty, String.Empty, String.Empty);
     }
     protected async Task DoIt(Callback todo, Func<string?, HttpContent?, Task<HttpResponseMessage>> thething, string toSend, string friendlyType, string contentType) {
+        try {
         StringContent stringContent = new StringContent(String.Empty);
         string rawContent = String.Empty;
         if (!String.IsNullOrWhiteSpace(toSend)) {
@@ -82,5 +85,14 @@ public class RepeatingService : BackgroundService
         _logger.LogInformation($"{rawResponse}\n");
         todo.IsComplete = true;
         todo.response = rawResponse;
+        }
+        catch (Exception ex) {
+            todo.IsError = true;
+            todo.failureMessage = ex.Message;
+            todo.failures+= 1;
+            if( todo.failures >= TheConfiguration.MaxFailures) {
+                todo.IsComplete = true;
+            }
+        }
     }
 }

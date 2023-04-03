@@ -16,5 +16,6 @@ public static class TheConfiguration {
     }
 
     public static string CustomString => (_data.Contains("CustomString") ? _data["CustomString"].ToString() : "key not found") ?? "-";
+    public static int MaxFailures => (_data.Contains("MaxFailures") ? int.Parse(_data["MaxFailures"].ToString()) : 10);
 
 }

@@ -28,10 +28,13 @@ namespace Database
         public required string url {get; set;}
         public DateTime timeof {get; set;} 
         public bool IsComplete {get; set;}  = false;
+        public bool IsError {get; set;}  = false;
         public string json {get; set;} = "";
         public string form {get; set;} = "";
         public string method {get; set;} = "";
         public string response {get; set;} = "";
+        public int failures {get; set;} = 0;
+        public string failureMessage {get; set;} = "";
     }
 
     public class CallbackCreate_Dto {
