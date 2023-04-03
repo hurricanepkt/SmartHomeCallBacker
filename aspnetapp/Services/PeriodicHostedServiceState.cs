@@ -1,0 +1,1 @@
+record PeriodicHostedServiceState(bool IsEnabled);
