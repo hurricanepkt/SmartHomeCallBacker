@@ -1,4 +1,5 @@
 using Database;
+using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Handlers
@@ -7,9 +8,11 @@ namespace Handlers
     {
         internal static void Setup(RouteGroupBuilder callbacksGroup)
         {
+       
             callbacksGroup.MapGet("/", CallbackHandlers.GetAllCallbacks);
             callbacksGroup.MapGet("/complete", CallbackHandlers.GetCompleteCallbacks);
             callbacksGroup.MapGet("/incomplete", CallbackHandlers.GetIncompleteCallbacks);
+            callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHAformatted);
             callbacksGroup.MapGet("/{id}", CallbackHandlers.GetCallback);
             callbacksGroup.MapPost("/", CallbackHandlers.CreateCallback);
             callbacksGroup.MapPut("/{id}", CallbackHandlers.UpdateCallback);
@@ -61,6 +64,17 @@ namespace Handlers
             return TypedResults.Ok(await db.Callbacks.Where(t => !t.IsComplete).ToListAsync());
         }
 
+        internal static async Task<IResult> GetHAformatted(FileContext db)
+        {
+            var thelist = await db.Callbacks.Where(t => !t.IsComplete).ToListAsync();
+
+            return TypedResults.Ok(
+                    new { 
+                        count = thelist.Count,
+                        incompleteCallbacks = thelist,
+                        CustomString = TheConfiguration.CustomString                   
+                    });
+        }
 
 
         internal static async Task<IResult> UpdateCallback(Guid id, Callback inputCallback, FileContext db)
