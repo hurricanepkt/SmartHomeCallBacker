@@ -113,7 +113,7 @@ public class RepeatingService : BackgroundService
         await _db.SaveChangesAsync();
     }
     private void CleanupInner(Func<Callback, bool> pred) {
-        var rng = _db.Callbacks.Where(f=> f.IsComplete);
+        var rng = _db.Callbacks.Where(pred);
         if (rng.Count() > 0) {
             _logger.LogInformation($"cleaning up {rng.Count()} records");
             _db.Callbacks.RemoveRange(rng);
