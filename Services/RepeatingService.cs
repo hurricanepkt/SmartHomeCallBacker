@@ -118,5 +118,5 @@ public class RepeatingService : BackgroundService
             _logger.LogInformation($"cleaning up {rng.Count()} records");
             _db.Callbacks.RemoveRange(rng);
         }        
-    }
+    } 
 }
