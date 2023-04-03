@@ -20,7 +20,6 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("v1/swagger.json", "Smart Home Call Backer v1");
 });
 
- 
-
+app.MapGet("/", () => Results.Redirect("/swagger"));
 app.Run();
 
