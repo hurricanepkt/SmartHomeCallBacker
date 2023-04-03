@@ -7,6 +7,10 @@ RUN dotnet publish -c Release -o /publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 as runtime
 WORKDIR /publish
+
+RUN apt-get update \
+    && apt-get install -y curl jq 
+    
 COPY --from=build-env /publish .
 ENV ASPNETCORE_URLS=http://+:80
 HEALTHCHECK CMD curl --fail http://localhost:80/health || exit
