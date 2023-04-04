@@ -25,7 +25,7 @@ app.UseSwaggerUI(c =>
 
 
 StaticLoggerFactory.Initialize(app.Services.GetRequiredService<ILoggerFactory>());
-TheConfiguration.Setup(Environment.GetEnvironmentVariables(), app);
+TheConfiguration.Setup(Environment.GetEnvironmentVariables());
 
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
