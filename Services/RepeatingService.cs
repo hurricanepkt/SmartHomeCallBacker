@@ -46,7 +46,7 @@ public class RepeatingService : BackgroundService
                 throw new NotImplementedException("unknown method");
             }
         }            
-        await Cleanup();
+        Cleanup();
         await _db.SaveChangesAsync();
     }   
 
