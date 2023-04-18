@@ -7,15 +7,19 @@ Simple API exposed service that calls URLs (particularly webhooks) based on API 
 Using docker compose 
 
 ```docker-compose.yml
-    AISmarthome:
-        container_name : AISmarthome
-        image: markgreenway/aismarthome:latest
-        ports:
-            - 8082:80
-            - "10111:10110/udp"
+    SmartHomeCallBacker:
+        container_name: SmartHomeCallBacker
+        image: markgreenway/smarthomecallbacker:latest
         restart: always
+        ports: 
+            - 8083:80
+        environment: 
+            CustomString : "EnvironmentVariablesSetCorrectly"
+            MaxFailures : 15,
+            CleanupAggressiveness : "AllComplete"
+            ServiceFrequency: 5
         volumes:
-            - /AppData/aismarthome:/Data
+            - /AppData/SmartHomeCallBacker:/Data
 ```
 
 ## Source Code
