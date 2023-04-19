@@ -20,7 +20,9 @@ CallbackHandlers.Setup(app.MapGroup("/callbacks"));
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
+
     c.SwaggerEndpoint("v1/swagger.json", "Smart Home Call Backer v1");
+    
 });
 
 
@@ -28,7 +30,7 @@ StaticLoggerFactory.Initialize(app.Services.GetRequiredService<ILoggerFactory>()
 TheConfiguration.Setup(Environment.GetEnvironmentVariables());
 
 
-app.MapGet("/", () => Results.Redirect("/swagger"));
+app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 app.MapHealthChecks("/health");
 app.Run();
 

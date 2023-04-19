@@ -1,17 +1,22 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0-jammy as build-env
-WORKDIR /src
-COPY *.csproj .
-RUN dotnet restore
-COPY . .
-RUN dotnet publish -c Release -o /publish
+# Learn about building .NET container images:
+# https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
+FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
+WORKDIR /source
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-jammy as runtime
-WORKDIR /publish
+# copy csproj and restore as distinct layers
+COPY SmartHomeCallBackerApp/*.csproj .
+RUN dotnet restore --use-current-runtime
 
-RUN apt-get update \
-    && apt-get install -y curl jq 
+# copy everything else and build app
+COPY SmartHomeCallBackerApp/. .
+RUN dotnet publish --use-current-runtime --no-self-contained  -o /app
 
-COPY --from=build-env /publish .
+
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
+WORKDIR /app 
+RUN apk --no-cache add curl
+COPY --from=build /app .
 ENV ASPNETCORE_URLS=http://+:80
 HEALTHCHECK CMD curl --fail http://localhost:80/health || exit
 EXPOSE 80
