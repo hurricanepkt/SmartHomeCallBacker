@@ -16,4 +16,7 @@ public class TheConfiguration : ConfigurationHelper {
     // Enums
     public static AgressivenessLevel CleanupAggressiveness => GetEnumValueByKeySafe<AgressivenessLevel>("CleanupAggressiveness", AgressivenessLevel.AllComplete);
     public enum AgressivenessLevel { AllComplete, SuccessOnly, None }
+    public static DatabaseType DatabaseType => GetEnumValueByKeySafe("DatabaseType", DatabaseType.SqlLite);
 }
+
+public enum  DatabaseType  { FileSystem, SqlLiteInMemory, SqlLite, }

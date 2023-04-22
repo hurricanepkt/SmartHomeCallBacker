@@ -6,12 +6,12 @@ using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
-builder.Services.AddDbContext<FileContext>();
+builder.Services.AddDbContext<Context>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Smart Home Call Backer", Version = "v1" }); });
 builder.Services.AddLogging( b=> b.AddConsole());
 builder.Services.AddSingleton<HttpClient>();
-builder.Services.AddSingleton<FileContext>();
+builder.Services.AddScoped<Context>();
 builder.Services.AddHostedService<RepeatingService>();
 builder.Services.AddHealthChecks();
 

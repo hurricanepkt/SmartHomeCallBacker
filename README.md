@@ -18,9 +18,18 @@ Using docker compose
             MaxFailures : 15,
             CleanupAggressiveness : "AllComplete"
             ServiceFrequency: 5
+            DataBaseType:  FileSystem
         volumes:
             - /AppData/SmartHomeCallBacker:/Data
 ```
+
+## Database Types
+
+DatabaseType has several options FileSystem, SqlLiteInMemory, SqlLite
+
+- FileSystem -->  writes human readable Json to /Data/json
+- SqlLiteInMemory --> uses an in memory SQL lite db (very transient, clears when re-launching)
+- SqlLite --> writes to file system /Data/sqlite/callbacks.db
 
 ## Source Code
 

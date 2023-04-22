@@ -7,10 +7,10 @@ namespace Services;
 
 public class TheCallerService {
     private readonly ILogger<TheCallerService> _logger;
-    private readonly FileContext _db;
+    private readonly Context _db;
     private readonly HttpClient _httpClient;
 
-    public TheCallerService(ILogger<TheCallerService> logger, FileContext db, HttpClient httpClient)
+    public TheCallerService(ILogger<TheCallerService> logger, Context db, HttpClient httpClient)
     {
         _logger = logger;
         _db = db;

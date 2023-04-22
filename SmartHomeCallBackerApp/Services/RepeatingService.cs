@@ -8,14 +8,14 @@ namespace Services;
 
 public class RepeatingService : BackgroundService
 {
-    public RepeatingService(FileContext db, ILogger<RepeatingService> logger, HttpClient httpClient)
+    public RepeatingService(ILogger<RepeatingService> logger, HttpClient httpClient,  IServiceProvider service)
     {
-        _db = db;
+        _service = service;
         _logger = logger;
         _httpClient = httpClient;
     }
     private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(TheConfiguration.ServiceFrequency));
-    private FileContext _db;
+    private IServiceProvider _service;
     private ILogger<RepeatingService> _logger;
     private HttpClient _httpClient;
 
@@ -30,8 +30,10 @@ public class RepeatingService : BackgroundService
     }
 
     protected async Task RunTick() {
-
-        foreach(var todo in await _db.Callbacks.Where(t => !t.IsComplete && t.timeof <= DateTime.Now).ToListAsync()) {
+        using var scope = _service.CreateScope();
+        var db = scope.ServiceProvider.GetService<Context>();
+        ArgumentNullException.ThrowIfNull(db);
+        foreach(var todo in await db.Callbacks.Where(t => !t.IsComplete && t.timeof <= DateTime.Now).ToListAsync()) {
             switch(todo.method) {
             case "POST": 
                 await Post(todo);
@@ -46,8 +48,8 @@ public class RepeatingService : BackgroundService
                 throw new NotImplementedException("unknown method");
             }
         }            
-        Cleanup();
-        await _db.SaveChangesAsync();
+        Cleanup(db);
+        await db.SaveChangesAsync();
     }   
 
     protected async Task Post(Callback todo) {
@@ -111,14 +113,14 @@ public class RepeatingService : BackgroundService
         }
     }
 
-    private void Cleanup()
+    private void Cleanup(Context db)
     {   
         switch(TheConfiguration.CleanupAggressiveness) {
             case TheConfiguration.AgressivenessLevel.AllComplete:
-                CleanupInner(f=> f.IsComplete);
+                CleanupInner(f=> f.IsComplete, db);
                 break;
             case TheConfiguration.AgressivenessLevel.SuccessOnly:
-                CleanupInner(f=> f.IsComplete && !f.IsError);
+                CleanupInner(f=> f.IsComplete && !f.IsError, db);
                 break;
             case TheConfiguration.AgressivenessLevel.None:
                 return;
@@ -126,11 +128,11 @@ public class RepeatingService : BackgroundService
                 return;
         }
     }
-    private void CleanupInner(Func<Callback, bool> pred) { 
-        var rng = _db.Callbacks.Where(pred);
+    private void CleanupInner(Func<Callback, bool> pred, Context db) { 
+        var rng = db.Callbacks.Where(pred);
         if (rng.Count() > 0) {
             _logger.LogInformation($"cleaning up {rng.Count()} records");
-            _db.Callbacks.RemoveRange(rng);
+            db.Callbacks.RemoveRange(rng);
         }        
     } 
 }

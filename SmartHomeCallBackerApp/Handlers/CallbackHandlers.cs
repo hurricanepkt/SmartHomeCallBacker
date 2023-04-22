@@ -27,7 +27,7 @@ public class CallbackHandlers
     }
 
 
-    internal static async Task<IResult> CreateCallback(CallbackCreate_Dto callback, FileContext db)
+    internal static async Task<IResult> CreateCallback(CallbackCreate_Dto callback, Context db)
     {
         var blah = CallbackCreate_Dto.ToDB(callback);
         db.Callbacks.Add(blah);
@@ -36,7 +36,7 @@ public class CallbackHandlers
         return TypedResults.Created($"/todoitems/{blah.id}", blah);
     }
 
-    internal static async Task<IResult> DeleteCallback(Guid id, FileContext db)
+    internal static async Task<IResult> DeleteCallback(Guid id, Context db)
     {
         if (await db.Callbacks.FindAsync(id) is Callback callback)
         {
@@ -48,12 +48,12 @@ public class CallbackHandlers
         return TypedResults.NotFound();
     }
 
-    internal static async Task<IResult> GetAllCallbacks(FileContext db)
+    internal static async Task<IResult> GetAllCallbacks(Context db)
     {
         return TypedResults.Ok(await db.Callbacks.ToArrayAsync());
     }
 
-    internal static async Task<IResult> GetCallback(Guid id, FileContext db)
+    internal static async Task<IResult> GetCallback(Guid id, Context db)
     {
         return await db.Callbacks.FindAsync(id)
                     is Callback callback
@@ -61,17 +61,17 @@ public class CallbackHandlers
                         : TypedResults.NotFound();
     }
 
-    internal static async Task<IResult> GetCompleteCallbacks(FileContext db)
+    internal static async Task<IResult> GetCompleteCallbacks(Context db)
     {
         return TypedResults.Ok(await db.Callbacks.Where(t => t.IsComplete).ToListAsync());
     }
 
-    internal static async Task<IResult> GetIncompleteCallbacks(FileContext db)
+    internal static async Task<IResult> GetIncompleteCallbacks(Context db)
     {
         return TypedResults.Ok(await db.Callbacks.Where(t => !t.IsComplete).ToListAsync());
     }
 
-    internal static async Task<IResult> GetHAformatted(FileContext db)
+    internal static async Task<IResult> GetHAformatted(Context db)
     {
         var thelist = await db.Callbacks.Where(t => !t.IsComplete).ToListAsync();
 
@@ -84,7 +84,7 @@ public class CallbackHandlers
     }
 
 
-    internal static async Task<IResult> UpdateCallback(Guid id, Callback inputCallback, FileContext db)
+    internal static async Task<IResult> UpdateCallback(Guid id, Callback inputCallback, Context db)
     {
         var todo = await db.Callbacks.FindAsync(id);
 
