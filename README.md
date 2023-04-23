@@ -43,6 +43,11 @@ to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
+## Thanks
+
+[Ivan Stoev](https://stackoverflow.com/users/5202563/ivan-stoev) - For help on answe [StackOverflow](https://stackoverflow.com/questions/76082155/ef-context-with-flexibility-onconfiguring-throws-errors)
+
 ## License
 
 [MIT](https://github.com/hurricanepkt/SmartHomeCallBacker/blob/main/LICENSE)
+
