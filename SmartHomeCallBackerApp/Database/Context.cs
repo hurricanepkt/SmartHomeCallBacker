@@ -8,33 +8,29 @@ namespace Database;
 
 public class Context : DbContext
 {
-    public static Object padlock = new Object();
     private ILogger<Context> _logger;
 
     public Context(DbContextOptions<Context> options, ILogger<Context> logger) : base(options) {
-        _logger = logger;
+        _logger = logger;        
     }
     public DbSet<Callback> Callbacks { get; set; }
 
-protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        lock(padlock) {
-            SetupFolders();
-            _logger.LogInformation("OnConfiguring_start");          
-            switch(TheConfiguration.DatabaseType) {
-                case DatabaseType.FileSystem:
-                    Setup_FileSystem(optionsBuilder);
-                    break;
-                case DatabaseType.SqlLiteInMemory:
-                    Setup_SqlLiteInMemory(optionsBuilder);
-                    break;
-                case DatabaseType.SqlLite:
-                    Setup_SqlLite(optionsBuilder);
-                    break;
-            }               
-            _logger.LogInformation("OnConfiguring_end");
+        SetupFolders();        
+        switch(TheConfiguration.DatabaseType) {
+            case DatabaseType.FileSystem:
+                Setup_FileSystem(optionsBuilder);
+                break;
+            case DatabaseType.SqlLiteInMemory:
+                Setup_SqlLiteInMemory(optionsBuilder);
+                break;
+            case DatabaseType.SqlLite:
+                Setup_SqlLite(optionsBuilder);
+                break;
         }
     }
+
     private const string dataPath = "/Data";
     private const string sqlitePath = dataPath + "/sqlite";    
     private const string jsonPath = dataPath + "/json";
@@ -52,13 +48,6 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         }
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        _logger.LogInformation("OnModelCreating_start");
-        modelBuilder.Entity<Callback>()
-            .ToTable("callbacks");
-        _logger.LogInformation("OnModelCreating_end");
-    }
 
     private void Setup_FileSystem(DbContextOptionsBuilder opt) {
         _logger.LogInformation("Setup_FileSystem_start");
@@ -75,12 +64,9 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     }
 
     private void Setup_SqlLite(DbContextOptionsBuilder opt) {
-        _logger.LogInformation("Setup_SqlLiteInMemory_start");
         var _connection = new SqliteConnection($"Data Source={sqlitePath}/callbacks.db");
         _connection.Open();
         opt.UseSqlite(connection: _connection);
-        Database.Migrate();
-        _logger.LogInformation("Setup_SqlLiteInMemory_end");
     }
 }
 

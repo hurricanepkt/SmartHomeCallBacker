@@ -10,6 +10,7 @@ public class RepeatingService : BackgroundService
 {
     public RepeatingService(ILogger<RepeatingService> logger, HttpClient httpClient,  IServiceProvider service)
     {
+        logger.LogWarning("Repeating Service CTOR");
         _service = service;
         _logger = logger;
         _httpClient = httpClient;
@@ -20,6 +21,7 @@ public class RepeatingService : BackgroundService
     private HttpClient _httpClient;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
+        _logger.LogWarning("Repeating Service ExecuteAsync");
         while(await _timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested) {
             try {
                 await RunTick();
@@ -30,6 +32,7 @@ public class RepeatingService : BackgroundService
     }
 
     protected async Task RunTick() {
+        _logger.LogWarning("Repeating Service RunTick");
         using var scope = _service.CreateScope();
         var db = scope.ServiceProvider.GetService<Context>();
         ArgumentNullException.ThrowIfNull(db);
