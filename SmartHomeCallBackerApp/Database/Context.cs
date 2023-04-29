@@ -83,6 +83,8 @@ public class Callback {
     public string response {get; set;} = "";
     public int failures {get; set;} = 0;
     public string failureMessage {get; set;} = "";
+    public DateTime approx => DateTime.Now;
+    public double how_long => (timeof - approx).TotalSeconds;
 }
 
 public class CallbackCreate_Dto {
