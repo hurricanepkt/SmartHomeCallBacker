@@ -44,6 +44,11 @@ public class CallbackHandlers
     internal static async Task<IResult> CreateCallback(CallbackCreate_Dto callback, Context db)
     {
         var blah = CallbackCreate_Dto.ToDB(callback);
+        if (callback.cleanupOthers) {
+            var itemsToDelete = db.Callbacks.Where(f=> f.json == callback.json && f.form == callback.form && !f.IsComplete);
+            db.Callbacks.RemoveRange(itemsToDelete);
+            await db.SaveChangesAsync();
+        }
         db.Callbacks.Add(blah);
         await db.SaveChangesAsync();
 

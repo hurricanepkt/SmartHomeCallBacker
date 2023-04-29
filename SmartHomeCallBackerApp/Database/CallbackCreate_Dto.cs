@@ -36,6 +36,10 @@ public class CallbackCreate_Dto {
     [SwaggerSchema("Form Data to post to URL (Base 64 Encoded) overriden by json")]
     [SwaggerSchemaExample("")]
     public string form {get; set;} = "";
+
+    [SwaggerSchema("Should this remove all not completed with the same Json Data? a.k.a. cleanup Others")]
+    [SwaggerSchemaExample("false")]
+    public bool cleanupOthers {get; set;} = false;
     
     public static Callback ToDB(CallbackCreate_Dto input) {
         DateTime theTime;
