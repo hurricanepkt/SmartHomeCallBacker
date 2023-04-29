@@ -14,16 +14,30 @@ public class CallbackHandlers
             .WithOpenApi(operation => new(operation)
             {
                 
-                Summary = "This is a summary",
-                Description = "This is a description"
+                Summary = "Dump the Database to Json",
+                Description = "For debugging purposes only",
             });
-        callbacksGroup.MapGet("/complete", CallbackHandlers.GetCompleteCallbacks);
-        callbacksGroup.MapGet("/incomplete", CallbackHandlers.GetIncompleteCallbacks);
-        callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHAformatted);
-        callbacksGroup.MapGet("/{id}", CallbackHandlers.GetCallback);
-        callbacksGroup.MapPost("/", CallbackHandlers.CreateCallback);
-        callbacksGroup.MapPut("/{id}", CallbackHandlers.UpdateCallback);
-        callbacksGroup.MapDelete("/{id}", CallbackHandlers.DeleteCallback);
+        callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHAformatted)
+            .WithOpenApi(operation => new(operation)
+            {
+                
+                Summary = "Home Assistant Friendly count and info on active callbacks",
+                Description = "Gives Count and then array of callbacks",
+            });
+        callbacksGroup.MapPost("/", CallbackHandlers.CreateCallback)
+            .WithOpenApi(operation => new(operation)
+            {
+                
+                Summary = "Create a Callback",
+                Description = "Post a CallbackCreate_Dto and the service will call it.",
+            });
+        callbacksGroup.MapDelete("/{id}", CallbackHandlers.DeleteCallback)
+            .WithOpenApi(operation => new(operation)
+            {
+                
+                Summary = "Delete a callback by id",
+                Description = "Primarily for preventing a callback from occurring.",
+            });
     }
 
 
@@ -53,24 +67,6 @@ public class CallbackHandlers
         return TypedResults.Ok(await db.Callbacks.ToArrayAsync());
     }
 
-    internal static async Task<IResult> GetCallback(Guid id, Context db)
-    {
-        return await db.Callbacks.FindAsync(id)
-                    is Callback callback
-                        ? TypedResults.Ok(callback)
-                        : TypedResults.NotFound();
-    }
-
-    internal static async Task<IResult> GetCompleteCallbacks(Context db)
-    {
-        return TypedResults.Ok(await db.Callbacks.Where(t => t.IsComplete).ToListAsync());
-    }
-
-    internal static async Task<IResult> GetIncompleteCallbacks(Context db)
-    {
-        return TypedResults.Ok(await db.Callbacks.Where(t => !t.IsComplete).ToListAsync());
-    }
-
     internal static async Task<IResult> GetHAformatted(Context db)
     {
         var thelist = await db.Callbacks.Where(t => !t.IsComplete).ToListAsync();
@@ -81,18 +77,5 @@ public class CallbackHandlers
                     incompleteCallbacks = thelist,
                     CustomString = TheConfiguration.CustomString                   
                 });
-    }
-
-
-    internal static async Task<IResult> UpdateCallback(Guid id, Callback inputCallback, Context db)
-    {
-        var todo = await db.Callbacks.FindAsync(id);
-
-        if (todo is null) return TypedResults.NotFound();
-
-        todo.url = inputCallback.url;
-        await db.SaveChangesAsync();
-
-        return TypedResults.Ok(todo);
     }
 }

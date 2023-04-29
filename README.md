@@ -22,6 +22,10 @@ Using docker compose
         volumes:
             - /AppData/SmartHomeCallBacker:/Data
 ```
+## Getting Started 
+
+You can see the getting started guide here : 
+[github.com/hurricanepkt/SmartHomeCallBacker/wiki/Getting-Started](https://github.com/hurricanepkt/SmartHomeCallBacker/wiki/Getting-Started)
 
 ## Database Types
 
@@ -34,6 +38,8 @@ DatabaseType has several options FileSystem, SqlLiteInMemory, SqlLite
 ## Source Code
 
 [github.com/hurricanepkt/SmartHomeCallBacker](https://github.com/hurricanepkt/SmartHomeCallBacker)
+
+
 
 
 ## Contributing

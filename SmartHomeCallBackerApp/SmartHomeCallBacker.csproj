@@ -11,12 +11,12 @@
     <PublishDir Condition=" '$(RuntimeIdentifier)' == '' ">publish\any</PublishDir>
     <PublishDir Condition=" '$(RuntimeIdentifier)' != '' ">publish\$(RuntimeIdentifier)</PublishDir>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.NET.Build.Containers" Version="0.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.*-*" />
     <PackageReference Include="FileBaseContext" Version="1.0.1" />
