@@ -1,7 +1,7 @@
 name: Scheduled Docker Update
 on:
     schedule:
-      - cron: '15 03 * * 6'  
+      - cron: '10 03 * * 6'  
 jobs:
     test_schedule:
       runs-on: ubuntu-latest
