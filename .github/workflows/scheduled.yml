@@ -1,4 +1,4 @@
-name: Experiment
+name: Bigger Scheduled Experiment
 on: 
   schedule:
   - cron: '*/5 * * * *'
