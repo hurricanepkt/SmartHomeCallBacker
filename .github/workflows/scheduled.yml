@@ -44,7 +44,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags:  markgreenway/smarthomecallbacker:latest
       # - name: Docker Hub Description
       #   uses: peter-evans/dockerhub-description@v3
       #   with:
