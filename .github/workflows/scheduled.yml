@@ -1,3 +1,4 @@
+name: Scheduled Docker Update
 on:
     schedule:
       - cron: '15 03 * * 6'  
