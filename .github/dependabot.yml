@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule: 
+      interval: "daily"
+      time: "10:28"
+      timezone: "America/New_York"
+    labels:
+      - "nuget-dependencies"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule: 
+      interval: "daily"
+      time: "10:40"
+      timezone: "America/New_York"
+    labels:
+      - "docker-dependencies"
