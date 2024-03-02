@@ -13,7 +13,7 @@ RUN dotnet publish --use-current-runtime --no-self-contained  -o /app
 
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
 WORKDIR /app 
 RUN apk --no-cache add curl
 COPY --from=build /app .
