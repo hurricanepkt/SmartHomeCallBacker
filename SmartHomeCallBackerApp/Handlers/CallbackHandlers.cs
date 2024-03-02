@@ -11,33 +11,17 @@ public class CallbackHandlers
     {
     
         callbacksGroup.MapGet("/", CallbackHandlers.GetAllCallbacks)
-            .WithOpenApi(operation => new(operation)
-            {
-                
-                Summary = "Dump the Database to Json",
-                Description = "For debugging purposes only",
-            });
+            .WithDescription("For debugging purposes only")
+            .WithSummary("Dump the Database to JSON");
         callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHAformatted)
-            .WithOpenApi(operation => new(operation)
-            {
-                
-                Summary = "Home Assistant Friendly count and info on active callbacks",
-                Description = "Gives Count and then array of callbacks",
-            });
+            .WithDescription("Gives Count and then array of callbacks")
+            .WithSummary("Home Assistant Friendly count and info on active callbacks");
         callbacksGroup.MapPost("/", CallbackHandlers.CreateCallback)
-            .WithOpenApi(operation => new(operation)
-            {
-                
-                Summary = "Create a Callback",
-                Description = "Post a CallbackCreate_Dto and the service will call it.",
-            });
+            .WithDescription("Post a CallbackCreate_Dto and the service will call it.")
+            .WithSummary("Create a Callback");
         callbacksGroup.MapDelete("/{id}", CallbackHandlers.DeleteCallback)
-            .WithOpenApi(operation => new(operation)
-            {
-                
-                Summary = "Delete a callback by id",
-                Description = "Primarily for preventing a callback from occurring.",
-            });
+            .WithDescription("Primarily for preventing a callback from occurring.")
+            .WithSummary("Delete a callback by id");
     }
 
 
